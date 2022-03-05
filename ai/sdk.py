@@ -78,6 +78,20 @@ class Car:
         index = self.next_next_checkpoint_index(game_state.number_of_checkpoints)
         return next(checkpoint for checkpoint in game_state.checkpoints if checkpoint.checkpoint_index == index)
 
+    def previous_checkpoint_index(self, number_of_checkpoints: int) -> int:
+        return (self.passed_checkpoints[0].index - 1) % number_of_checkpoints
+
+    def previous_checkpoint(self, game_state: "GameState") -> "Checkpoint":
+        index = self.previous_checkpoint_index(
+            game_state.number_of_checkpoints)
+        return next(checkpoint for checkpoint in game_state.checkpoints if
+                    checkpoint.checkpoint_index == index)
+
+    def get_braking_point(self, game_state: "GameState") -> complex:
+        checkpoint = self.next_checkpoint(game_state)
+        m = self.pos - checkpoint.pos
+        return self.pos + m
+
     def distance_to_next_checkpoint(self, game_state: "GameState") -> int:
         final_pos = self.next_checkpoint(game_state).pos
         current_pos = self.pos
