@@ -24,6 +24,11 @@ def game_loop(game_state: GameState, game_time: int, log: Logger) -> PlayerOrder
             # (tip: that argument can be computed with atan2)
             return ForceTowards(car.id, team_id, next_checkpoint.pos, 50)
 
+        def attacking_car(car: Car) -> PlayerOrder:
+            lightest_car = GameState.get_lightest_car(1-team_id)
+            enemy_location = car.pos
+            target_location = car.next_checkpoint().pos
+            return ForceTowards(car.id, team_id, target_location, 100)
         def running_car(car: Car) -> PlayerOrder:
             next_checkpoint = car.next_checkpoint(game_state)
             if not car.boost_used:
