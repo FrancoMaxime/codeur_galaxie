@@ -23,6 +23,12 @@ def game_loop(game_state: GameState, game_time: int, log: Logger) -> PlayerOrder
             # ApplyForce(car.id, team_id, [argument of next_checkpoint.pos - car.pos], 100)
             # (tip: that argument can be computed with atan2)
             return ForceTowards(car.id, team_id, next_checkpoint.pos, 100)
+
+        def attacking_car(car: Car) -> PlayerOrder:
+            lightest_car = GameState.get_lightest_car(1-team_id)
+            enemy_location = car.pos
+            target_location = car.next_checkpoint().pos
+            return ForceTowards(car.id, team_id, target_location, 100)
         log.info("I'm creating my order")
         order = OrderForEachCar(order_for_car(my_cars[0]), order_for_car(my_cars[1]))
 
