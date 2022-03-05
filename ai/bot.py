@@ -28,14 +28,13 @@ def game_loop(game_state: GameState, game_time: int, log: Logger) -> PlayerOrder
             next_checkpoint = lightest_car.next_checkpoint(game_state)
             next_next_checkpoint = lightest_car.next_next_checkpoint(game_state)
 
-            if (game_state.distance(car.pos, next_checkpoint.pos) < 30 and game_state.distance(lightest_car.pos, next_checkpoint.pos) > 100):
+            if game_state.distance(car.pos, next_checkpoint.pos) < 30 and game_state.distance(lightest_car.pos, next_checkpoint.pos) > 100:
                 next_next_checkpoint = next_checkpoint
                 log.info("waiting him to come")
             
             if game_state.distance(lightest_car.pos, car.pos) < 200 and next_next_checkpoint.checkpoint_index == next_checkpoint.checkpoint_index :
                 log.info("going to confront the ship")
                 return ForceTowards(car.id, team_id, lightest_car.pos, 100)
-                    
             
             #log.info(f"lightest car is {lightest_car.mass}")
             #log.info(f"pos of next checkpoint {next_next_checkpoint.pos}")

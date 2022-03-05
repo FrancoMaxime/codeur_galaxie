@@ -1,5 +1,4 @@
 import json
-from tabnanny import check
 from typing import Callable, Dict, List, Optional, Tuple
 from math import sqrt
 
@@ -162,7 +161,7 @@ class GameState:
         opponent_car = self.get_opponent_cars(1 - team_id)
         return opponent_car[0] if opponent_car[0].mass > opponent_car[1].mass else opponent_car[1]
     
-    def distance(self, source_pos : int, target_pos : int) -> int:
+    def distance(self, source_pos : complex, target_pos : complex) -> int:
         return int(sqrt((source_pos.real - target_pos.real)**2 + (source_pos.imag - target_pos.imag)**2))
 
 
