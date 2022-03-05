@@ -1,5 +1,6 @@
 import json
 from typing import Callable, Dict, List, Optional, Tuple
+from math import sqrt
 
 def complex_from_json(info: Dict) -> complex:
     return info["re"] + 1j * info["im"]
@@ -75,6 +76,11 @@ class Car:
     def next_next_checkpoint(self, game_state: "GameState") -> "Checkpoint":
         index = self.next_next_checkpoint_index(game_state.number_of_checkpoints)
         return next(checkpoint for checkpoint in game_state.checkpoints if checkpoint.checkpoint_index == index)
+
+    def distance_to_next_checkpoint(self, game_state: "GameState") -> int:
+        final_pos = self.next_checkpoint(game_state).pos
+        current_pos = self.pos
+        return int(sqrt((current_pos.real - final_pos.real)**2 + (current_pos.imag - final_pos.imag)**2))
 
 class Checkpoint:
 
