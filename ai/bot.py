@@ -23,8 +23,20 @@ def game_loop(game_state: GameState, game_time: int, log: Logger) -> PlayerOrder
             # ApplyForce(car.id, team_id, [argument of next_checkpoint.pos - car.pos], 100)
             # (tip: that argument can be computed with atan2)
             return ForceTowards(car.id, team_id, next_checkpoint.pos, 100)
+
+        def running_car(car: Car) -> PlayerOrder:
+            next_checkpoint = car.next_checkpoint(game_state)
+            next_next_checkpoint = car.next_next_checkpoint(game_state)
+            actual_pos = car.pos
+            if not car.boost_used:
+                return UseBoost(car.id, team_id)
+            if car.distance_to_next_checkpoint(game_state) < 30:
+                return ForceTowards(car.id, team_id, next_next_checkpoint.pos, 100)
+            return ForceTowards(car.id, team_id, next_next_checkpoint.pos, 100)
+
+
         log.info("I'm creating my order")
-        order = OrderForEachCar(order_for_car(my_cars[0]), order_for_car(my_cars[1]))
+        order = OrderForEachCar(running_car(my_cars[0]), order_for_car(my_cars[1]))
 
     else:
         # Game has not yet started. It is the only place where we can (and must!) set the masses for the ships.
