@@ -24,16 +24,19 @@ def game_loop(game_state: GameState, game_time: int, log: Logger) -> PlayerOrder
             return ForceTowards(car.id, team_id, next_checkpoint.pos, 50)
 
         def attacking_car(car: Car) -> PlayerOrder:
-            lightest_car = game_state.get_lightest_car(1 - team_id)
-            next_checkpoint = lightest_car.next_checkpoint(game_state)
-            
-            log.info(f"light - car {game_state.distance(lightest_car.pos, car.pos)}")
+            most_advanced_car = game_state.get_most_advanced_car(1 - team_id)
+
+            next_checkpoint = most_advanced_car.next_checkpoint(game_state)
+            if (game_state.distance(next_checkpoint.pos, most_advanced_car.pos) < game_state.distance(next_checkpoint.pos, car.pos)):
+                next_checkpoint = most_advanced_car.next_next_checkpoint(game_state)
+
+            log.info(f"light - car {game_state.distance(most_advanced_car.pos, car.pos)}")
             log.info(f"check - car {game_state.distance(car.pos, next_checkpoint.pos)}")
-            if (game_state.distance(lightest_car.pos, car.pos) < 250 and game_state.distance(car.pos, next_checkpoint.pos) < 150) or game_state.distance(lightest_car.pos, car.pos) < 50:
+            if (game_state.distance(most_advanced_car.pos, car.pos) < 200 and game_state.distance(car.pos, next_checkpoint.pos) < 200) or game_state.distance(most_advanced_car.pos, car.pos) < 50:
                 log.info("going to confront the ship")
-                if game_state.distance(car.pos, lightest_car.pos) < 30 and abs(car.speed) > 30:
-                    return ForceTowards(car.id, team_id, car.get_braking_point_2(lightest_car.pos, game_state), 100)
-                return ForceTowards(car.id, team_id, lightest_car.pos, 100)
+                if game_state.distance(car.pos, most_advanced_car.pos) < 30 and abs(car.speed) > 30:
+                    return ForceTowards(car.id, team_id, car.get_braking_point_2(most_advanced_car.pos, game_state), 100)
+                return ForceTowards(car.id, team_id, most_advanced_car.pos, 100)
                 
             if game_state.distance(car.pos, next_checkpoint.pos) < 30 and abs(car.speed) > 30:
                 return ForceTowards(car.id, team_id, car.get_braking_point_2(next_checkpoint, game_state), 100)

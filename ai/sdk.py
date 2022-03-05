@@ -160,7 +160,13 @@ class GameState:
     def get_heaviest_car(self, team_id : int) -> Car:
         opponent_car = self.get_opponent_cars(1 - team_id)
         return opponent_car[0] if opponent_car[0].mass > opponent_car[1].mass else opponent_car[1]
-    
+
+    def get_most_advanced_car(self, team_id : int) ->Car:
+        opponent_car = self.get_opponent_cars(1 - team_id)
+        if len(opponent_car[0].passed_checkpoints) == len(opponent_car[1].passed_checkpoints):
+            return self.get_lightest_car(team_id)
+        return opponent_car[0] if len(opponent_car[0].passed_checkpoints) > len(opponent_car[1].passed_checkpoints) else opponent_car[1]
+
     def distance(self, source_pos : complex, target_pos : complex) -> int:
         return int(sqrt((source_pos.real - target_pos.real)**2 + (source_pos.imag - target_pos.imag)**2))
 
