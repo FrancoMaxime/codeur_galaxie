@@ -1,4 +1,5 @@
 import json
+from numbers import Complex
 from typing import Callable, Dict, List, Optional, Tuple
 from math import sqrt
 
@@ -86,8 +87,8 @@ class Car:
         return next(checkpoint for checkpoint in game_state.checkpoints if
                     checkpoint.checkpoint_index == index)
 
-    def get_braking_point_2(self, checkpoint : "Checkpoint", game_state: "GameState") -> complex:
-        m = self.pos - checkpoint.pos
+    def get_braking_point_2(self, pos : complex, game_state: "GameState") -> complex:
+        m = self.pos - pos
         return self.pos + m
 
     def get_braking_point(self, game_state: "GameState") -> complex:
@@ -177,6 +178,17 @@ class GameState:
 
     def distance(self, source_pos : complex, target_pos : complex) -> int:
         return int(sqrt((source_pos.real - target_pos.real)**2 + (source_pos.imag - target_pos.imag)**2))
+
+    def get_closest_checkpoints(self) -> List[Complex]:
+        distance = self.distance(self.checkpoints[0].pos,self.checkpoints[-1].pos)
+        check = [self.checkpoints[0].pos, self.checkpoints[-1].pos]
+        for i in range(0, self.number_of_checkpoints-2):
+            if self.distance(self.checkpoints[i].pos,self.checkpoints[i+1].pos) < distance:
+                distance = self.distance(self.checkpoints[i].pos,self.checkpoints[i+1].pos)
+                check = [self.checkpoints[i].pos,self.checkpoints[i+1].pos]
+        return check
+
+
 
 
 class PlayerOrder:
