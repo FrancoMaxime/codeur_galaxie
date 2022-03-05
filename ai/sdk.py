@@ -1,4 +1,5 @@
 import json
+from tabnanny import check
 from typing import Callable, Dict, List, Optional, Tuple
 from math import sqrt
 
@@ -80,7 +81,16 @@ class Car:
     def distance_to_next_checkpoint(self, game_state: "GameState") -> int:
         final_pos = self.next_checkpoint(game_state).pos
         current_pos = self.pos
-        return int(sqrt((current_pos.real - final_pos.real)**2 + (current_pos.imag - final_pos.imag)**2))
+        return game_state.distance(current_pos, final_pos)
+
+    def get_closest_next_checkpoint(self, game_state: "GameState") -> "Checkpoint":
+        closest_checkpoint = self.next_next_checkpoint(game_state)
+        current_pos = self.pos
+        for checkpoint in game_state.checkpoints:
+            if checkpoint.checkpoint_index != self.next_checkpoint_index(game_state.number_of_checkpoints) and game_state.distance(current_pos,closest_checkpoint.pos) > game_state.distance(current_pos, checkpoint.pos):
+                closest_checkpoint = checkpoint
+        return checkpoint
+
 
 class Checkpoint:
 
@@ -132,11 +142,7 @@ class GameState:
         return len(self.checkpoints)
 
     def get_opponent_cars(self, team_id : int) -> List[Car]:
-        opponent_cars = List[Car]
-        for car in self.cars:
-            if car.team_id != team_id:
-                opponent_cars.append(car)
-        return opponent_cars
+        return [car for car in self.cars if car.team_id != team_id]
 
     def get_lightest_car(self, team_id : int) -> Car:
         opponent_car = self.get_opponent_cars(1 - team_id)
@@ -145,7 +151,9 @@ class GameState:
     def get_heaviest_car(self, team_id : int) -> Car:
         opponent_car = self.get_opponent_cars(1 - team_id)
         return opponent_car[0] if opponent_car[0].mass > opponent_car[1].mass else opponent_car[1]
-        
+    
+    def distance(self, source_pos : int, target_pos : int) -> int:
+        return int(sqrt((source_pos.real - target_pos.real)**2 + (source_pos.imag - target_pos.imag)**2))
 
 
 class PlayerOrder:
