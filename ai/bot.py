@@ -29,11 +29,14 @@ def game_loop(game_state: GameState, game_time: int, log: Logger) -> PlayerOrder
             enemy_location = car.pos
             target_location = car.next_checkpoint().pos
             return ForceTowards(car.id, team_id, target_location, 100)
+        
         def running_car(car: Car) -> PlayerOrder:
             next_checkpoint = car.next_checkpoint(game_state)
-            if not car.boost_used:
+            if not car.boost_used and len(car.passed_checkpoints) >3:
                 return UseBoost(car.id, team_id)
-            if car.distance_to_next_checkpoint(game_state) < 30 and abs(car.speed) > 30:
+            if 50 <= car.distance_to_next_checkpoint(game_state) < 150 and abs(car.speed) > 200:
+                return ForceTowards(car.id, team_id, car.get_braking_point(game_state), 100)
+            if car.distance_to_next_checkpoint(game_state) < 50 and abs(car.speed) > 100:
                 return ForceTowards(car.id, team_id, car.get_braking_point(game_state), 100)
             return ForceTowards(car.id, team_id, next_checkpoint.pos, 100)
 
