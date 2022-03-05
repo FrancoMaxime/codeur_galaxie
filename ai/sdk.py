@@ -92,8 +92,16 @@ class Car:
 
     def get_braking_point(self, game_state: "GameState") -> complex:
         checkpoint = self.next_checkpoint(game_state)
+        # m = self.pos - checkpoint.pos
+        # return m
+        m = checkpoint.pos - self.speed
+        return m
+
+    def get_vector_check_point(self, game_state: "GameState") -> complex:
+        checkpoint = self.next_checkpoint(game_state)
         m = self.pos - checkpoint.pos
-        return self.pos + m
+        return m
+
 
     def distance_to_next_checkpoint(self, game_state: "GameState") -> int:
         final_pos = self.next_checkpoint(game_state).pos
