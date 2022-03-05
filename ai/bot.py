@@ -4,7 +4,6 @@ from time import time
 
 # Reading my team id from the command line args
 team_id = int(sys.argv[1])
-
 def game_loop(game_state: GameState, game_time: int, log: Logger) -> PlayerOrder:
     now = time()
     # log.info(f"Received the game state. My team is {team_id}")
@@ -26,15 +25,24 @@ def game_loop(game_state: GameState, game_time: int, log: Logger) -> PlayerOrder
 
         def attacking_car(car: Car) -> PlayerOrder:
             lightest_car = game_state.get_lightest_car(1 - team_id)
-            enemy_location = car.next_next_checkpoint(game_state)
-            target_location = car.next_checkpoint(game_state).pos
-            checkpoint = lightest_car.get_closest_next_checkpoint(game_state)
-            log.info(f"lightest car is {lightest_car.mass}")
-            log.info(f"pos of next checkpoint {checkpoint.pos}")
-            if game_state.distance(car.pos, checkpoint.pos) > 25:
-                return ForceTowards(car.id, team_id, checkpoint.pos, 100)
-            else:
-                return ForceTowards(car.id, team_id, checkpoint.pos, 100)
+            next_checkpoint = lightest_car.next_checkpoint(game_state)
+            next_next_checkpoint = lightest_car.next_next_checkpoint(game_state)
+
+            if (game_state.distance(car.pos, next_checkpoint.pos) < 30 and game_state.distance(lightest_car.pos, next_checkpoint.pos) > 100):
+                next_next_checkpoint = next_checkpoint
+                log.info("waiting him to come")
+            
+            if game_state.distance(lightest_car.pos, car.pos) < 200 and next_next_checkpoint.checkpoint_index == next_checkpoint.checkpoint_index :
+                log.info("going to confront the ship")
+                return ForceTowards(car.id, team_id, lightest_car.pos, 100)
+                    
+            
+            #log.info(f"lightest car is {lightest_car.mass}")
+            #log.info(f"pos of next checkpoint {next_next_checkpoint.pos}")
+            if game_state.distance(car.pos, next_next_checkpoint.pos) < 30 and abs(car.speed) > 30:
+                return ForceTowards(car.id, team_id, car.get_braking_point_2(next_next_checkpoint, game_state), 100)
+            return ForceTowards(car.id, team_id, next_next_checkpoint.pos, 100)
+            
         def running_car(car: Car) -> PlayerOrder:
             next_checkpoint = car.next_checkpoint(game_state)
             if not car.boost_used:

@@ -87,6 +87,10 @@ class Car:
         return next(checkpoint for checkpoint in game_state.checkpoints if
                     checkpoint.checkpoint_index == index)
 
+    def get_braking_point_2(self, checkpoint : "Checkpoint", game_state: "GameState") -> complex:
+        m = self.pos - checkpoint.pos
+        return self.pos + m
+
     def get_braking_point(self, game_state: "GameState") -> complex:
         checkpoint = self.next_checkpoint(game_state)
         m = self.pos - checkpoint.pos
@@ -96,14 +100,6 @@ class Car:
         final_pos = self.next_checkpoint(game_state).pos
         current_pos = self.pos
         return game_state.distance(current_pos, final_pos)
-
-    def get_closest_next_checkpoint(self, game_state: "GameState") -> "Checkpoint":
-        closest_checkpoint = self.next_next_checkpoint(game_state)
-        current_pos = self.pos
-        for checkpoint in game_state.checkpoints:
-            if checkpoint.checkpoint_index != self.next_checkpoint_index(game_state.number_of_checkpoints) and game_state.distance(current_pos,closest_checkpoint.pos) > game_state.distance(current_pos, checkpoint.pos):
-                closest_checkpoint = checkpoint
-        return checkpoint
 
 
 class Checkpoint:
