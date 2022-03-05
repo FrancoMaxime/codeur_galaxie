@@ -46,7 +46,7 @@ def game_loop(game_state: GameState, game_time: int, log: Logger) -> PlayerOrder
                 return ForceTowards(car.id, team_id, car.get_braking_point(game_state), 100)
             if car.distance_to_next_checkpoint(game_state) < 50 and 15 < abs(car.speed) < 100:
                 return ForceTowards(car.id, team_id, next_checkpoint, 0)
-            return ForceTowards(car.id, team_id, next_checkpoint, vit)
+            return ForceTowards(car.id, team_id, car.get_braking_point(game_state), vit)
 
 
         # log.info("I'm creating my order")
