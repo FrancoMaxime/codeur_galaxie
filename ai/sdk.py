@@ -2,11 +2,14 @@ import json
 from typing import Callable, Dict, List, Optional, Tuple
 from math import sqrt
 
+
 def complex_from_json(info: Dict) -> complex:
     return info["re"] + 1j * info["im"]
 
+
 def complex_to_json(z: complex) -> Dict:
     return {"re": z.real, "im": z.imag}
+
 
 class Circle:
 
@@ -17,6 +20,7 @@ class Circle:
     def __init__(self, radius: float):
         self.radius = radius
 
+
 class CheckpointInfo:
 
     @staticmethod
@@ -26,6 +30,7 @@ class CheckpointInfo:
     def __init__(self, index: int, time: int):
         self.index = index
         self.time = time
+
 
 class Car:
 
@@ -92,8 +97,6 @@ class Car:
 
     def get_braking_point(self, game_state: "GameState") -> complex:
         checkpoint = self.next_checkpoint(game_state)
-        # m = self.pos - checkpoint.pos
-        # return m
         m = checkpoint.pos - self.speed
         return m
 
@@ -102,11 +105,14 @@ class Car:
         m = self.pos - checkpoint.pos
         return m
 
-
     def distance_to_next_checkpoint(self, game_state: "GameState") -> int:
         final_pos = self.next_checkpoint(game_state).pos
         current_pos = self.pos
         return game_state.distance(current_pos, final_pos)
+
+    def cross_product(self, game_state: "GameState") -> float:
+        checkpoint = self.next_checkpoint(game_state).pos
+        return self.pos.real * checkpoint.real - self.pos.imag * checkpoint.imag
 
 
 class Checkpoint:
@@ -121,6 +127,7 @@ class Checkpoint:
         self.pos = pos
         self.shape = shape
         self.checkpoint_index = index
+
 
 class GameState:
 

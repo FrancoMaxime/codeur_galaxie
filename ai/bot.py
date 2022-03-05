@@ -46,16 +46,7 @@ def game_loop(game_state: GameState, game_time: int, log: Logger) -> PlayerOrder
             next_checkpoint = car.next_checkpoint(game_state).pos
             if not car.boost_used and len(car.passed_checkpoints) > 3:
                 return UseBoost(car.id, team_id)
-            vit = 100
-            if abs(car.speed) > 400:
-                vit = 0
-            if 50 <= car.distance_to_next_checkpoint(game_state) < 150 and abs(car.speed) > 200:
-                return ForceTowards(car.id, team_id, car.get_braking_point(game_state), 100)
-            if car.distance_to_next_checkpoint(game_state) < 50 and abs(car.speed) > 100:
-                return ForceTowards(car.id, team_id, car.get_braking_point(game_state), 100)
-            if car.distance_to_next_checkpoint(game_state) < 50 and 15 < abs(car.speed) < 100:
-                return ForceTowards(car.id, team_id, next_checkpoint, 0)
-            return ForceTowards(car.id, team_id, car.get_braking_point(game_state), vit)
+            return ForceTowards(car.id, team_id, car.get_braking_point(game_state), 100)
 
 
         # log.info("I'm creating my order")
@@ -63,7 +54,7 @@ def game_loop(game_state: GameState, game_time: int, log: Logger) -> PlayerOrder
 
     else:
         # Game has not yet started. It is the only place where we can (and must!) set the masses for the ships.
-        order = SetCarMasses(team_id, my_cars[0].id, my_cars[1].id, 3, 17)
+        order = SetCarMasses(team_id, my_cars[0].id, my_cars[1].id, 1, 19)
 
     time_taken = time() - now
     # Logging how much time it took.
