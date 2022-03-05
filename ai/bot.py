@@ -26,12 +26,13 @@ def game_loop(game_state: GameState, game_time: int, log: Logger) -> PlayerOrder
         def attacking_car(car: Car) -> PlayerOrder:
             most_advanced_car = game_state.get_most_advanced_car(1 - team_id)
             checks = game_state.get_closest_checkpoints()
-            if (game_state.distance(car.pos, most_advanced_car.pos) < 50):
+
+            if (game_state.distance(car.pos, most_advanced_car.pos) < 10):
                 return ForceTowards(car.id, team_id, most_advanced_car.pos, 100)
-            if (game_state.distance(car.pos, checks[0]) < 50):
-                return ForceTowards(car.id, team_id, checks[1], 100)
-            else:
+            if (game_state.distance(car.pos, checks[0]) > 25):
                 return ForceTowards(car.id, team_id, checks[0], 100)
+            else:
+                return ForceTowards(car.id, team_id, most_advanced_car.pos, 100)
             
         def running_car(car: Car) -> PlayerOrder:
             next_checkpoint = car.next_checkpoint(game_state).pos

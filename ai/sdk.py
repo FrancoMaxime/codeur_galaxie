@@ -182,7 +182,7 @@ class GameState:
     def get_closest_checkpoints(self) -> List[Complex]:
         distance = self.distance(self.checkpoints[0].pos,self.checkpoints[-1].pos)
         check = [self.checkpoints[0].pos, self.checkpoints[-1].pos]
-        for i in range(0, self.number_of_checkpoints-2):
+        for i in range(0, self.number_of_checkpoints-1):
             if self.distance(self.checkpoints[i].pos,self.checkpoints[i+1].pos) < distance:
                 distance = self.distance(self.checkpoints[i].pos,self.checkpoints[i+1].pos)
                 check = [self.checkpoints[i].pos,self.checkpoints[i+1].pos]
