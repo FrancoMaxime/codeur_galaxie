@@ -131,6 +131,23 @@ class GameState:
     def number_of_checkpoints(self) -> int:
         return len(self.checkpoints)
 
+    def get_opponent_cars(self, team_id : int) -> List[Car]:
+        opponent_cars = List[Car]
+        for car in self.cars:
+            if car.team_id != team_id:
+                opponent_cars.append(car)
+        return opponent_cars
+
+    def get_lightest_car(self, team_id : int) -> Car:
+        opponent_car = self.get_opponent_cars(1 - team_id)
+        return opponent_car[1] if opponent_car[0].mass > opponent_car[1].mass else opponent_car[0]
+
+    def get_heaviest_car(self, team_id : int) -> Car:
+        opponent_car = self.get_opponent_cars(1 - team_id)
+        return opponent_car[0] if opponent_car[0].mass > opponent_car[1].mass else opponent_car[1]
+        
+
+
 class PlayerOrder:
 
     def __init__(self, type_name: str):
